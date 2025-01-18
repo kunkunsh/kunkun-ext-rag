@@ -2,5 +2,18 @@
 	"name": "@kunkun/kunkun-ext-vscode",
 	"version": "0.0.4",
 	"license": "MIT",
-	"exports": "./mod.ts"
+	"exports": "./mod.ts",
+	"publish": {
+		"include": ["mod.ts", "deno-src", "build", "LICENSE", "README.md", "package.json"]
+	},
+	"imports": {
+		"@langchain/community": "npm:@langchain/community@^0.3.22",
+		"@langchain/core": "npm:@langchain/core@^0.3.27",
+		"@langchain/langgraph": "npm:@langchain/langgraph@^0.2.38",
+		"@langchain/openai": "npm:@langchain/openai@^0.3.16",
+		"@langchain/textsplitters": "npm:@langchain/textsplitters@^0.1.0",
+		"@std/assert": "jsr:@std/assert@1",
+		"faiss-node": "npm:faiss-node@^0.5.1",
+		"langchain": "npm:langchain@^0.3.9"
+	}
 }
