@@ -1,0 +1,86 @@
+{
+  "$schema": "https://schema.kunkun.sh",
+  "name": "RAG",
+  "draft": true,
+  "version": "0.0.3",
+  "private": true,
+  "kunkun": {
+    "name": "TODO: Change Display Name",
+    "shortDescription": "A Custom UI template for sveltekit",
+    "longDescription": "A Custom UI template for sveltekit",
+    "identifier": "RAG",
+    "icon": {
+      "type": "iconify",
+      "value": "logos:svelte-icon"
+    },
+    "demoImages": [],
+    "permissions": [
+      "clipboard:read-text",
+      "notification:all"
+    ],
+    "customUiCmds": [
+      {
+        "main": "/",
+        "dist": "build",
+        "devMain": "http://localhost:5173",
+        "name": "Sveltekit Template Home Page",
+        "cmds": []
+      },
+      {
+        "main": "about",
+        "dist": "build",
+        "devMain": "http://localhost:5173/about",
+        "name": "Sveltekit Template About Page",
+        "cmds": []
+      }
+    ],
+    "templateUiCmds": []
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "lint": "prettier --check . && eslint .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@kksh/api": "^0.0.48",
+    "@kksh/svelte5": "0.1.10",
+    "clsx": "^2.1.1",
+    "lucide-svelte": "^0.460.1",
+    "mode-watcher": "^0.5.0",
+    "tailwind-merge": "^2.5.4",
+    "tailwind-variants": "^0.3.0"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^3.3.1",
+    "@sveltejs/kit": "^2.8.1",
+    "@sveltejs/vite-plugin-svelte": "^4.0.1",
+    "svelte": "^5.2.7",
+    "svelte-check": "^4.0.9",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "@sveltejs/adapter-static": "^3.0.6",
+    "@tailwindcss/typography": "^0.5.15",
+    "@types/eslint": "^9.6.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-svelte": "^2.46.0",
+    "globals": "^15.12.0",
+    "postcss": "^8.4.49",
+    "prettier": "^3.3.3",
+    "prettier-plugin-svelte": "^3.2.8",
+    "prettier-plugin-tailwindcss": "^0.6.9",
+    "tailwindcss": "^3.4.15",
+    "typescript-eslint": "^8.15.0"
+  },
+  "type": "module",
+  "files": [
+    "build",
+    ".gitignore"
+  ],
+  "packageManager": "pnpm@9.15.3+sha512.1f79bc245a66eb0b07c5d4d83131240774642caaa86ef7d0434ab47c0d16f66b04e21e0c086eb61e62c77efc4d7f7ec071afad3796af64892fae66509173893a"
+}
