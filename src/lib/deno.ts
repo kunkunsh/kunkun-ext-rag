@@ -1,4 +1,4 @@
-import { log, fs, shell, path, toast } from '@kksh/api/ui/iframe';
+import { fs, shell, path, toast } from '@kksh/api/ui/iframe';
 import type { DenoAPI } from '../api.types';
 
 export async function getRpcAPI(env: { OPENAI_API_KEY: string; EXTENSION_SUPPORT: string }) {
@@ -14,10 +14,9 @@ export async function getRpcAPI(env: { OPENAI_API_KEY: string; EXTENSION_SUPPORT
 			cwd,
 			// allowAllEnv: true,
 			allowEnv: ['OPENAI_API_KEY', 'EXTENSION_SUPPORT', 'CWD'],
+			allowWrite: ['$EXTENSION_SUPPORT'],
 			allowAllRead: true,
-			// allowRead: ['$EXTENSION_SUPPORT', '$EXTENSION/deno-src'],
-			// allowWrite: ['$EXTENSION_SUPPORT'],
-			allowAllWrite: true,
+			// allowAllWrite: true,
 			allowAllFfi: true, // /Users/hk/Dev/kunkun-extension-repos/kunkun-ext-rag/deno-src/node_modules/.deno/faiss-node@0.5.1/node_modules/faiss-node/build/Release/faiss-node.node
 			// allowAllSys: true, // uid
 			allowSys: ['uid'],
@@ -46,7 +45,11 @@ export async function installDenoDeps() {
 		return;
 	}
 
-	const command = shell.createCommand('deno', ['install', '--allow-scripts'], { cwd });
+	const command = shell.createCommand(
+		'deno',
+		['install', '--allow-scripts=npm:faiss-node@0.5.1,npm:sharp@0.33.5'],
+		{ cwd }
+	);
 	const ret = await command.execute();
 	if (ret.code !== 0) {
 		// log.error(`Failed to install deno dependencies; ${ret.stderr}`);

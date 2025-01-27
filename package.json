@@ -35,7 +35,7 @@
 							"program": "deno",
 							"args": [
 								"install",
-								"--allow-scripts"
+								"--allow-scripts=npm:faiss-node@0.5.1,npm:sharp@0.33.5"
 							]
 						}
 					}
@@ -47,7 +47,9 @@
 					{
 						"path": "$EXTENSION/deno-src/index.ts",
 						"read": "*",
-						"write": "*",
+						"write": [
+							"$EXTENSION_SUPPORT"
+						],
 						"ffi": "*",
 						"sys": [
 							"uid"
@@ -84,24 +86,21 @@
 	},
 	"dependencies": {
 		"@iconify/svelte": "^4.2.0",
-		"@kksh/api": "^0.0.54",
+		"@kksh/api": "^0.0.55",
 		"@kksh/svelte5": "0.1.15",
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^0.474.0",
 		"mode-watcher": "^0.5.1",
+		"sveltekit-superforms": "^2.23.1",
 		"tailwind-merge": "^2.6.0",
 		"tailwind-variants": "^0.3.1",
 		"valibot": "^1.0.0-beta.14"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.3.1",
+		"@sveltejs/adapter-static": "^3.0.6",
 		"@sveltejs/kit": "^2.8.1",
 		"@sveltejs/vite-plugin-svelte": "^4.0.1",
-		"svelte": "^5.2.7",
-		"svelte-check": "^4.0.9",
-		"typescript": "^5.6.3",
-		"vite": "^5.4.11",
-		"@sveltejs/adapter-static": "^3.0.6",
 		"@tailwindcss/typography": "^0.5.15",
 		"@types/eslint": "^9.6.1",
 		"autoprefixer": "^10.4.20",
@@ -113,8 +112,12 @@
 		"prettier": "^3.3.3",
 		"prettier-plugin-svelte": "^3.2.8",
 		"prettier-plugin-tailwindcss": "^0.6.9",
+		"svelte": "^5.2.7",
+		"svelte-check": "^4.0.9",
 		"tailwindcss": "^3.4.15",
-		"typescript-eslint": "^8.15.0"
+		"typescript": "^5.6.3",
+		"typescript-eslint": "^8.15.0",
+		"vite": "^5.4.11"
 	},
 	"type": "module",
 	"files": [
