@@ -17,7 +17,50 @@
 		"demoImages": [],
 		"permissions": [
 			"clipboard:read-text",
-			"notification:all"
+			"notification:all",
+			"dialog:all",
+			{
+				"permission": "fs:exists",
+				"allow": [
+					{
+						"path": "$EXTENSION/deno-src/node_modules"
+					}
+				]
+			},
+			{
+				"permission": "shell:execute",
+				"allow": [
+					{
+						"cmd": {
+							"program": "deno",
+							"args": [
+								"install",
+								"--allow-scripts"
+							]
+						}
+					}
+				]
+			},
+			{
+				"permission": "shell:deno:spawn",
+				"allow": [
+					{
+						"path": "$EXTENSION/deno-src/index.ts",
+						"read": "*",
+						"write": "*",
+						"ffi": "*",
+						"sys": [
+							"uid"
+						],
+						"env": "*",
+						"net": [
+							"api.openai.com"
+						]
+					}
+				]
+			},
+			"shell:stdin-write",
+			"shell:kill"
 		],
 		"customUiCmds": [
 			{

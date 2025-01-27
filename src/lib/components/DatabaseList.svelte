@@ -24,6 +24,7 @@
 			>
 				Delete
 			</Button>
+			<a href={`/database/${dbInfo.id}`}><Button>Manage Database</Button></a>
 		</Card.Content>
 	</Card.Root>
 {/snippet}
