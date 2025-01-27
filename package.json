@@ -1,5 +1,6 @@
 {
 	"$schema": "https://schema.kunkun.sh",
+	"license": "MIT",
 	"name": "kunkun-ext-rag",
 	"draft": true,
 	"version": "0.0.4",
@@ -11,7 +12,7 @@
 		"identifier": "RAG",
 		"icon": {
 			"type": "iconify",
-			"value": "logos:svelte-icon"
+			"value": "carbon:rag"
 		},
 		"demoImages": [],
 		"permissions": [
@@ -23,14 +24,7 @@
 				"main": "/",
 				"dist": "build",
 				"devMain": "http://localhost:5173",
-				"name": "Sveltekit Template Home Page",
-				"cmds": []
-			},
-			{
-				"main": "about",
-				"dist": "build",
-				"devMain": "http://localhost:5173/about",
-				"name": "Sveltekit Template About Page",
+				"name": "RAG",
 				"cmds": []
 			}
 		],
@@ -46,13 +40,15 @@
 		"format": "prettier --write ."
 	},
 	"dependencies": {
-		"@kksh/api": "^0.0.48",
-		"@kksh/svelte5": "0.1.10",
+		"@iconify/svelte": "^4.2.0",
+		"@kksh/api": "^0.0.54",
+		"@kksh/svelte5": "0.1.15",
 		"clsx": "^2.1.1",
-		"lucide-svelte": "^0.460.1",
-		"mode-watcher": "^0.5.0",
-		"tailwind-merge": "^2.5.4",
-		"tailwind-variants": "^0.3.0"
+		"lucide-svelte": "^0.474.0",
+		"mode-watcher": "^0.5.1",
+		"tailwind-merge": "^2.6.0",
+		"tailwind-variants": "^0.3.1",
+		"valibot": "^1.0.0-beta.14"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.3.1",

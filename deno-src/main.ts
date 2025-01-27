@@ -14,7 +14,7 @@ import {
 } from "langchain/document_loaders/fs/json";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 
-const embeddings = new OpenAIEmbeddings({
+export const embeddings = new OpenAIEmbeddings({
   model: "text-embedding-3-large",
 });
 async function getVectorStore(): Promise<FaissStore> {
@@ -23,14 +23,19 @@ async function getVectorStore(): Promise<FaissStore> {
     return FaissStore.load("./FaissStore", embeddings);
   }
 
-  const loader = new DirectoryLoader("/Users/hk/Desktop/rag-ts/datasets", {
-    ".json": (path) => new JSONLoader(path, "/texts"),
-    ".jsonl": (path) => new JSONLinesLoader(path, "/html"),
-    ".txt": (path) => new TextLoader(path),
-    ".md": (path) => new TextLoader(path),
-  });
+  const loader = new DirectoryLoader(
+    "/Users/hk/Dev/kunkun-extension-repos/kunkun-ext-rag/deno-src/buckets",
+    // "/Users/hk/Dev/kunkun-docs/src/content/docs",
+    {
+      ".json": (path) => new JSONLoader(path, "/texts"),
+      ".jsonl": (path) => new JSONLinesLoader(path, "/html"),
+      ".txt": (path) => new TextLoader(path),
+      ".md": (path) => new TextLoader(path),
+      ".mdx": (path) => new TextLoader(path),
+    }
+  );
   const docs = await loader.load();
-  console.log(docs);
+  // console.log(docs);
 
   const splitter = new RecursiveCharacterTextSplitter({
     chunkSize: 1000,
@@ -55,60 +60,60 @@ async function deleteDocuments(vectorStore: FaissStore, ids: string[]) {
 
 const vectorStore = await getVectorStore();
 
-const llm = new ChatOpenAI({
-  model: "gpt-4o-mini",
-  temperature: 0,
-});
+// const llm = new ChatOpenAI({
+//   model: "gpt-4o-mini",
+//   temperature: 0,
+// });
 
-// Define prompt for question-answering
-const promptTemplate = await pull<ChatPromptTemplate>("rlm/rag-prompt");
+// // Define prompt for question-answering
+// const promptTemplate = await pull<ChatPromptTemplate>("rlm/rag-prompt");
 
-// Define state for application
-const InputStateAnnotation = Annotation.Root({
-  question: Annotation<string>,
-});
+// // Define state for application
+// const InputStateAnnotation = Annotation.Root({
+//   question: Annotation<string>,
+// });
 
-const StateAnnotation = Annotation.Root({
-  question: Annotation<string>,
-  context: Annotation<Document[]>,
-  answer: Annotation<string>,
-});
+// const StateAnnotation = Annotation.Root({
+//   question: Annotation<string>,
+//   context: Annotation<Document[]>,
+//   answer: Annotation<string>,
+// });
 
-// Define application steps
-const retrieve = async (state: typeof InputStateAnnotation.State) => {
-  const retrievedDocs = await vectorStore.similaritySearch(state.question);
-  return { context: retrievedDocs };
-};
+// // Define application steps
+// const retrieve = async (state: typeof InputStateAnnotation.State) => {
+//   const retrievedDocs = await vectorStore.similaritySearch(state.question);
+//   return { context: retrievedDocs };
+// };
 
-const generate = async (state: typeof StateAnnotation.State) => {
-  const docsContent = state.context.map((doc) => doc.pageContent).join("\n");
-  const messages = await promptTemplate.invoke({
-    question: state.question,
-    context: docsContent,
-  });
-  const response = await llm.invoke(messages);
-  return { answer: response.content };
-};
+// const generate = async (state: typeof StateAnnotation.State) => {
+//   const docsContent = state.context.map((doc) => doc.pageContent).join("\n");
+//   const messages = await promptTemplate.invoke({
+//     question: state.question,
+//     context: docsContent,
+//   });
+//   const response = await llm.invoke(messages);
+//   return { answer: response.content };
+// };
 
-// Compile application and test
-const graph = new StateGraph(StateAnnotation)
-  .addNode("retrieve", retrieve)
-  .addNode("generate", generate)
-  .addEdge("__start__", "retrieve")
-  .addEdge("retrieve", "generate")
-  .addEdge("generate", "__end__")
-  .compile();
+// // Compile application and test
+// const graph = new StateGraph(StateAnnotation)
+//   .addNode("retrieve", retrieve)
+//   .addNode("generate", generate)
+//   .addEdge("__start__", "retrieve")
+//   .addEdge("retrieve", "generate")
+//   .addEdge("generate", "__end__")
+//   .compile();
 
-let inputs = { question: "What is Task Decomposition?" };
+// let inputs = { question: "What is Task Decomposition?" };
 
-while (true) {
-  const question = prompt("Enter your question (or 'exit' to quit): ");
-  if (!question || question.toLowerCase() === "exit") {
-    break;
-  }
+// while (true) {
+//   const question = prompt("Enter your question (or 'exit' to quit): ");
+//   if (!question || question.toLowerCase() === "exit") {
+//     break;
+//   }
 
-  const result = await graph.invoke({ question });
-  console.log("\nAnswer:");
-  console.log(result.answer);
-  console.log("\n-------------------\n");
-}
+//   const result = await graph.invoke({ question });
+//   console.log("\nAnswer:");
+//   console.log(result.answer);
+//   console.log("\n-------------------\n");
+// }
