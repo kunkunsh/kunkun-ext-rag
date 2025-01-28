@@ -11,8 +11,9 @@
 			<Card.Title>{dbInfo.name}</Card.Title>
 			<Card.Description><strong>AI Provider:</strong> {dbInfo.ai}</Card.Description>
 		</Card.Header>
-		<Card.Content>
+		<Card.Content class="grid grid-cols-2 gap-2">
 			<Button
+				class="w-full"
 				variant="destructive"
 				size="lg"
 				onclick={() =>
@@ -24,7 +25,9 @@
 			>
 				Delete
 			</Button>
-			<a href={`/database/${dbInfo.id}`}><Button>Manage Database</Button></a>
+			<a class="w-full" href={`/database/${dbInfo.id}`}>
+				<Button size="lg" class="w-full">Use Database</Button>
+			</a>
 		</Card.Content>
 	</Card.Root>
 {/snippet}

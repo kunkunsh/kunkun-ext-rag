@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { ui } from '@kksh/api/ui/iframe';
 	import { Sidebar } from '@kksh/svelte5';
-	import Icon from '@iconify/svelte';
-	import { BotIcon, DatabaseIcon, MessageCircleIcon } from 'lucide-svelte';
+	import { DatabaseIcon, InfoIcon } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 
 	onMount(() => {
@@ -16,9 +15,9 @@
 			icon: DatabaseIcon
 		},
 		{
-			title: 'Chat',
-			url: '/chat',
-			icon: MessageCircleIcon
+			title: 'About',
+			url: '/about',
+			icon: InfoIcon
 		}
 	];
 </script>

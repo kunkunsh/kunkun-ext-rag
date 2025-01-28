@@ -1,7 +1,7 @@
 import { fs, shell, path, toast } from '@kksh/api/ui/iframe';
-import type { DenoAPI } from '../api.types';
+import type { DenoAPI } from '../api.types.ts';
 
-export async function getRpcAPI(env: { OPENAI_API_KEY: string; EXTENSION_SUPPORT: string }) {
+export async function getRpcAPI(env: { OPENAI_API_KEY: string }) {
 	await installDenoDeps().catch((err) => {
 		return toast.error(`Failed to install deno dependencies; ${err.message}`);
 	});
@@ -13,7 +13,7 @@ export async function getRpcAPI(env: { OPENAI_API_KEY: string; EXTENSION_SUPPORT
 		{
 			cwd,
 			// allowAllEnv: true,
-			allowEnv: ['OPENAI_API_KEY', 'EXTENSION_SUPPORT', 'CWD'],
+			allowEnv: ['OPENAI_API_KEY', 'CWD'],
 			allowWrite: ['$EXTENSION_SUPPORT'],
 			allowAllRead: true,
 			// allowAllWrite: true,

@@ -3,7 +3,7 @@
 	"license": "MIT",
 	"name": "kunkun-ext-rag",
 	"draft": true,
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"private": true,
 	"kunkun": {
 		"name": "RAG",
@@ -62,14 +62,25 @@
 				]
 			},
 			"shell:stdin-write",
-			"shell:kill"
+			"shell:kill",
+			{
+				"permission": "open:url",
+				"allow": [
+					{
+						"url": "https://en.wikipedia.org/wiki/Retrieval-augmented_generation"
+					},
+					{
+						"url": "https://github.com/kunkunsh/kunkun-ext-rag"
+					}
+				]
+			}
 		],
 		"customUiCmds": [
 			{
 				"main": "/",
 				"dist": "build",
 				"devMain": "http://localhost:5173",
-				"name": "RAG",
+				"name": "Local RAG",
 				"cmds": []
 			}
 		],
@@ -88,9 +99,11 @@
 		"@iconify/svelte": "^4.2.0",
 		"@kksh/api": "^0.0.55",
 		"@kksh/svelte5": "0.1.15",
+		"@langchain/openai": "^0.4.2",
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^0.474.0",
 		"mode-watcher": "^0.5.1",
+		"svelte-markdown": "^0.4.1",
 		"sveltekit-superforms": "^2.23.1",
 		"tailwind-merge": "^2.6.0",
 		"tailwind-variants": "^0.3.1",

@@ -1,17 +1,22 @@
 import { FaissStore } from '@langchain/community/vectorstores/faiss';
-import { OpenAIEmbeddings } from '@langchain/openai';
+import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
 import * as v from 'valibot';
 import * as path from 'jsr:@std/path';
 import { existsSync, readdirSync } from 'node:fs';
 import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
-import { JSONLoader, JSONLinesLoader } from 'langchain/document_loaders/fs/json';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
 import { computeSha256FromText } from './crypto.ts';
 import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf';
+import { DenoAPI } from '../src/api.types.ts';
+import { txtExts } from './constants.ts';
+import { AIMessageChunk } from '@langchain/core/messages';
 
 export const embeddings = new OpenAIEmbeddings({
+	// configuration: {
+	// 	baseURL: 'https://api.deepseek.com'
+	// },
 	model: 'text-embedding-3-large'
 });
 
@@ -27,8 +32,8 @@ export async function getDocsFromDirectory(directoryPath: string): Promise<Docum
 	});
 
 	const loader = new DirectoryLoader(directoryPath, {
-		'.json': (path) => new JSONLoader(path, '/texts'),
-		'.jsonl': (path) => new JSONLinesLoader(path, '/html'),
+		// '.json': (path) => new JSONLoader(path, '/texts'),
+		// '.jsonl': (path) => new JSONLinesLoader(path, '/html'),
 		'.txt': (path) => new TextLoader(path),
 		'.md': (path) => new TextLoader(path),
 		'.mdx': (path) => new TextLoader(path)
@@ -38,23 +43,22 @@ export async function getDocsFromDirectory(directoryPath: string): Promise<Docum
 	return allSplits;
 }
 
-export class Bucket {
-	readonly bucketPath: string;
-	readonly faissStorePath: string;
-	readonly metadataPath: string;
+export class Bucket implements DenoAPI {
+	bucketPath: string = '';
+	faissStorePath: string = '';
+	metadataPath: string = '';
+	bucketDir: string = '';
+	bucketName: string = '';
 	private _vectorStore: FaissStore | null = null;
 	filesSha256: Set<string> = new Set();
 
-	constructor(
-		readonly bucketDir: string,
-		readonly bucketName: string
-	) {
+	async init(bucketDir: string, bucketName: string) {
+		this.bucketDir = bucketDir;
+		this.bucketName = bucketName;
 		this.bucketPath = path.join(this.bucketDir, this.bucketName);
 		this.faissStorePath = path.join(this.bucketPath, 'faiss-store');
 		this.metadataPath = path.join(this.bucketPath, 'metadata.json');
-	}
 
-	async init() {
 		if (!existsSync(this.bucketPath)) {
 			Deno.mkdirSync(this.bucketPath, { recursive: true });
 		}
@@ -69,9 +73,6 @@ export class Bucket {
 		}
 		this.updateMetadata();
 		this._vectorStore = await this.getVectorStore();
-		// if (this._vectorStore) {
-		//   await this._vectorStore.save(this.faissStorePath);
-		// }
 	}
 
 	updateMetadata() {
@@ -160,7 +161,7 @@ export class Bucket {
 		this.updateSha256(docs);
 		console.error('Updated sha256', this.filesSha256.size);
 		// await this.addDocuments(fileteredDocs);
-		return this.vectorStore.addDocuments(fileteredDocs).catch((err) => {
+		await this.vectorStore.addDocuments(fileteredDocs).catch((err) => {
 			console.error('Error adding documents', err);
 		});
 	}
@@ -183,5 +184,71 @@ export class Bucket {
 		const fileteredDocs = this.getFilteredDocs(docs);
 		this.updateSha256(docs);
 		await this.addDocuments(fileteredDocs);
+	}
+
+	async retrieve(query: string) {
+		const retriever = this.vectorStore.asRetriever();
+		const docs = await retriever.invoke(query);
+		const docsText = docs.map((d) => d.pageContent).join('');
+		return docsText;
+	}
+
+	async query(question: string) {
+		const docsText = await this.retrieve(question);
+		const systemPrompt = `You are an assistant for question-answering tasks.
+Use the following pieces of retrieved context to answer the question.
+If you don't know the answer, just say that you don't know.
+Use three sentences maximum and keep the answer concise.
+Context: {context}:`;
+
+		// Populate the system prompt with the retrieved context
+		const systemPromptFmt = systemPrompt.replace('{context}', docsText);
+
+		// Create a model
+		const model = new ChatOpenAI({
+			model: 'gpt-4o',
+			temperature: 0
+		});
+
+		// Generate a response
+		const ans: AIMessageChunk = await model.invoke([
+			{
+				role: 'system',
+				content: systemPromptFmt
+			},
+			{
+				role: 'user',
+				content: question
+			}
+		]);
+		return ans.content.toString();
+	}
+
+	async indexFiles(files: string[]) {
+		console.error('Indexing files', files);
+		for (const file of files) {
+			if (!existsSync(file)) {
+				throw new Error(`File ${file} does not exist`);
+			}
+			// check if file is directory
+			const stats = Deno.statSync(file);
+			console.error('Indexing file', file, 'stats.isFile', stats.isFile);
+			if (stats.isFile) {
+				const ext = path.extname(file);
+				if (txtExts.includes(ext)) {
+					console.error('Adding text file 1', file);
+					await this.addTextFile(file);
+					console.error('Finished adding text file', file);
+				} else if (ext === '.pdf') {
+					console.error('Adding pdf file', file);
+					await this.addPDF(file);
+				} else {
+					throw new Error(`Unsupported file type: ${ext}`);
+				}
+			} else {
+				console.error('Adding directory', file);
+				await this.addDirectory(file);
+			}
+		}
 	}
 }

@@ -1,43 +1,51 @@
 <script lang="ts">
-	import { dialog, path } from '@kksh/api/ui/iframe';
+	import { dialog, path, toast } from '@kksh/api/ui/iframe';
 	import { dbStore } from '@/stores/db';
-	import { Button } from '@kksh/svelte5';
+	import { Button, Input, Popover } from '@kksh/svelte5';
 	import { getRpcAPI } from '@/deno';
+	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
-	import { toast } from '@kksh/api/headless';
-	let { data } = $props();
+	import { onDestroy, onMount } from 'svelte';
+	import { InfoIcon, LoaderIcon } from 'lucide-svelte';
+	import SvelteMarkdown from 'svelte-markdown';
 
+	let { data } = $props();
+	let query = $state('');
+	let ans = $state('');
+	let loading = $state(false);
 	const selectedDb = $dbStore.find((db) => db.id === data.id);
-	if (!selectedDb) {
-		toast.error('Database not found', { description: 'Name: ' + data.id });
-		goto('/');
-	}
 	let rpc: Awaited<ReturnType<typeof getRpcAPI>> | undefined;
 
-	async function indexFiles(files: string[]) {
+	onMount(async () => {
 		if (!selectedDb) {
 			toast.error('Database not found', { description: 'Name: ' + data.id });
 			return goto('/');
 		}
+		rpc = await getRpcAPI({
+			OPENAI_API_KEY: selectedDb.apiKey
+		});
+		rpc.command.stderr.on('data', (data) => {
+			console.warn(data);
+		});
+		const extSupportDir = await path.extensionSupportDir();
+		await rpc?.api.init(extSupportDir, selectedDb!.name);
+	});
+
+	onDestroy(async () => {
+		await rpc?.process.kill();
+	});
+
+	async function indexFiles(files: string[]) {
 		try {
-			const extSupportDir = await path.extensionSupportDir();
-			rpc = await getRpcAPI({
-				OPENAI_API_KEY: selectedDb.apiKey,
-				EXTENSION_SUPPORT: extSupportDir
-			});
-			rpc.command.stderr.on('data', (data) => {
-				console.warn(data);
-			});
-			console.log('Start indexing files');
-			await rpc.api.indexFiles(selectedDb!.name, files);
+			console.log('Start indexing files', files);
+
+			await rpc?.api.indexFiles(files);
+			await rpc?.api.save();
 			console.log('Finished indexing files');
+			toast.success('Finished indexing files');
 		} catch (error) {
 			console.error('Error indexing files', error);
 			toast.error('Failed to index files');
-		} finally {
-			setTimeout(async () => {
-				await rpc?.process.kill();
-			}, 2_000);
 		}
 	}
 
@@ -65,7 +73,51 @@
 </script>
 
 <div class="container">
-	<h1 class="text-2xl font-bold">Manage Database</h1>
-	<Button onclick={addFiles}>Add Files</Button>
-	<Button onclick={addDirectory}>Add Directory</Button>
+	<h1 class="text-2xl font-bold">
+		Manage Database
+		<Popover.Root>
+			<Popover.Trigger>
+				<Button size="icon" variant="ghost">
+					<InfoIcon />
+				</Button>
+			</Popover.Trigger>
+			<Popover.Content>
+				Pick the files or directories you want to index into vector database. Then you can use the
+				database to answer questions.
+			</Popover.Content>
+		</Popover.Root>
+	</h1>
+	<div class="flex gap-2">
+		<Button class="w-full" onclick={addFiles}>Add Files</Button>
+		<Button class="w-full" onclick={addDirectory}>Add Directory</Button>
+	</div>
+	<form
+		method="POST"
+		use:enhance={async ({ formElement, formData, action, cancel, submitter }) => {
+			cancel();
+			ans = '';
+			loading = true;
+			if (query.length === 0) {
+				toast.error('Question is required');
+				return;
+			}
+			ans = (await rpc?.api.query(query)) ?? '';
+			query = '';
+			loading = false;
+		}}
+	>
+		<div class="mt-4 flex gap-1">
+			<Input name="query" type="text" bind:value={query} placeholder="Question" />
+			<Button type="submit">Submit</Button>
+		</div>
+		{#if loading}
+			<div class="flex h-64 items-center justify-center">
+				<LoaderIcon class="animate-spin" />
+			</div>
+		{:else}
+			<div class="container mt-4">
+				<SvelteMarkdown source={ans} />
+			</div>
+		{/if}
+	</form>
 </div>
