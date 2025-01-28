@@ -29,3 +29,13 @@ This is to prevent indexing other files you may not want to index, like lock fil
 
 ![](https://i.imgur.com/SMwsks7.png)
 ![](https://i.imgur.com/KPkwhMN.png)
+
+## API Key
+
+You need to supply an OpenAI API key to use this extension. It's kept locally with encryption.
+It's used for running embedding and LLM model. So if you index lots of files and directories, it may cost you some money.
+Index only the files you need.
+
+## Reference
+
+- [Langchain RAG](https://js.langchain.com/docs/concepts/rag/)
