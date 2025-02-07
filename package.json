@@ -3,7 +3,7 @@
 	"license": "MIT",
 	"name": "kunkun-ext-rag",
 	"draft": true,
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"private": true,
 	"kunkun": {
 		"name": "RAG",
@@ -97,7 +97,7 @@
 	},
 	"dependencies": {
 		"@iconify/svelte": "^4.2.0",
-		"@kksh/api": "^0.0.55",
+		"@kksh/api": "^0.1.1",
 		"@kksh/svelte5": "0.1.15",
 		"@langchain/openai": "^0.4.2",
 		"clsx": "^2.1.1",

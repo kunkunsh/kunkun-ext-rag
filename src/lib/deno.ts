@@ -1,4 +1,4 @@
-import { fs, shell, path, toast } from '@kksh/api/ui/iframe';
+import { fs, shell, path, toast } from '@kksh/api/ui/custom';
 import type { DenoAPI } from '../api.types.ts';
 
 export async function getRpcAPI(env: { OPENAI_API_KEY: string }) {

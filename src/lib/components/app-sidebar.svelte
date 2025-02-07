@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ui } from '@kksh/api/ui/iframe';
+	import { ui } from '@kksh/api/ui/custom';
 	import { Sidebar } from '@kksh/svelte5';
 	import { DatabaseIcon, InfoIcon } from 'lucide-svelte';
 	import { onMount } from 'svelte';

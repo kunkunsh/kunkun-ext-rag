@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { db, ui, kv, toast } from '@kksh/api/ui/iframe';
+	import { db, ui, kv, toast } from '@kksh/api/ui/custom';
 	import AddBucket from '$lib/components/forms/AddBucket.svelte';
 	import type { DBInfo } from '@/models';
 	import { onMount } from 'svelte';

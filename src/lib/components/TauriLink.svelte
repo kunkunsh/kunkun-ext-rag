@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { open } from '@kksh/api/ui/iframe';
+	import { open } from '@kksh/api/ui/custom';
 
 	let { href, children } = $props();
 </script>

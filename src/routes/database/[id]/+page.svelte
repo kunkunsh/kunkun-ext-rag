@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { dialog, path, toast } from '@kksh/api/ui/iframe';
+	import { dialog, path, toast } from '@kksh/api/ui/custom';
 	import { dbStore } from '@/stores/db';
 	import { Button, Input, Popover } from '@kksh/svelte5';
 	import { getRpcAPI } from '@/deno';

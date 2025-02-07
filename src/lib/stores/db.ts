@@ -1,6 +1,6 @@
 import { DBInfo } from '@/models';
 import { get, writable } from 'svelte/store';
-import { db as dbAPI } from '@kksh/api/ui/iframe';
+import { db as dbAPI } from '@kksh/api/ui/custom';
 import { DB_DATATYPE_DATABASE } from '@/constants';
 import * as v from 'valibot';
 import { SearchModeEnum } from '@kksh/api/models';

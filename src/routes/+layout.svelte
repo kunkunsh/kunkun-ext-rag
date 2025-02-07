@@ -3,7 +3,7 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import { ThemeWrapper, updateTheme } from '@kksh/svelte5';
 	import { onMount } from 'svelte';
-	import { ui } from '@kksh/api/ui/iframe';
+	import { ui } from '@kksh/api/ui/custom';
 	import { Sidebar } from '@kksh/svelte5';
 	import AppSidebar from '$lib/components/app-sidebar.svelte';
 	import { DB_DATATYPE_DATABASE } from '@/constants';
