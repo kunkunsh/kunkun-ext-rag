@@ -1,10 +1,18 @@
 {
 	"name": "@kunkun/kunkun-ext-rag",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"license": "MIT",
 	"exports": "./mod.ts",
 	"publish": {
-		"include": ["mod.ts", "deno-src", "build", "LICENSE", "README.md", "package.json"]
+		"include": [
+			"mod.ts",
+			"deno-src",
+			"src/api.types.ts",
+			"build",
+			"LICENSE",
+			"README.md",
+			"package.json"
+		]
 	},
 	"imports": {
 		"@kunkun/api": "jsr:@kunkun/api@^0.0.52",
